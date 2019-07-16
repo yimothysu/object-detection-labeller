@@ -1,0 +1,80 @@
+.absolute {
+  position: absolute;
+}
+
+h1 {
+  z-index: 1;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  color: #151f3b;
+}
+
+#title-heading {
+  width: 12em;
+  top: 2em;
+  font-size: 3em;
+}
+
+h2 {
+  z-index: 1;
+  color: #151f3b;
+}
+
+h2 span {
+  font-family: 'Heebo';
+}
+
+#subtitle-heading {
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 10em;
+  top: 8em;
+}
+
+#upload-icon {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 110px;
+}
+
+#upload-icon path {
+  fill: #151f3b;
+}
+
+#tools {
+  z-index: 1;
+  text-align: center;
+  display: none;
+  background-color: #98a9b5;
+}
+
+#image-heading {
+  position: relative;
+}
+
+#label {
+  position: relative;
+  color: #151f3b;
+}
+
+#label-input {
+  border-radius: 0.5em;
+  border: 0 solid;
+  padding-left: 0.25em;
+  font-size: 1.5em;
+}
+
+#label-input, #save-label {
+  color: #151f3b;
+}
+
+label {
+  font-size: 1.5em;
+}
