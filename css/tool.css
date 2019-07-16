@@ -31,7 +31,7 @@ h2 span {
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  width: 10em;
+  width: 16.5em;
   top: 8em;
 }
 
@@ -84,17 +84,33 @@ button {
 }
 
 #generate {
-  position: absolute;
-  padding: 5px 10px;
-  bottom: 5em;
+  border: 0 solid;
+  border-radius: 1em;
+  background-color: #f79823;
+  font-size: 14pt;
+  position: relative;
+  margin-top: 10em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 8em;
+  padding: 0.5em 1em;
   display: none;
 }
 
-.code-box {
+#generate:hover {
+  background-color: #db8418;
+  cursor: pointer;
+}
+
+#code-box {
+  display: none;
   position: relative;
   margin-top: 16em;
+  margin-left: auto;
+  margin-right: auto;
   height: 20em;
   width: 500px;
+  font-family: monospace;
 }
 
 .navigation {
@@ -111,4 +127,44 @@ button {
 #right {
   left: 8em;
   padding: 2em;
+}
+
+#snackbar {
+  z-index: 1;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 30em;
+  padding: 10px 0;
+  background-color: #303030;
+  color: #e8e8e8;
+  text-align: center;
+  position: fixed;
+  bottom: 2em;
+  visibility: hidden;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 2em; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 2em; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 2em; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 2em; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }

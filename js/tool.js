@@ -1,3 +1,7 @@
+window.onload = (e) => {
+    document.getElementById('tools').focus();
+}
+
 var darkBlue;
 var transparentRed;
 var transparentGreen;
@@ -168,7 +172,6 @@ function onImageLoad(num) {
       const currentScale = images[num - 1].scale;
       context.drawImage(document.getElementById(imageId), 0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale);
       setBounds(0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale, num)
-      console.log('it\'s happening');
       openTools('right');
       images[num - 1].toolsInfo = {
         direction: 'right'
@@ -178,22 +181,21 @@ function onImageLoad(num) {
       const currentScale = images[num - 1].scale;
       context.drawImage(document.getElementById(imageId), 0, 0, document.getElementById(imageId).width * currentScale, windowHeight);
       setBounds(0, 0, document.getElementById(imageId).width * currentScale, windowHeight, num);
-      console.log('it\'s happening 2');
       openTools('right', (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px');
       images[num - 1].toolsInfo = {
         direction: 'right',
         size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
       };
     }
-    console.log(images[num - 1].toolsInfo);
   }
+  showMessage('Drag the cursor to form a rectangle to annotate!');
 }
 
 function openTools(option, size='400px') {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
   document.getElementById('tools').style.display = 'block';
-  document.getElementById('code-box').style.width = size;
+  document.getElementById('code-box').style.width = size - 2;
   if (option === 'bottom') {
     document.getElementById('tools').style.width = windowWidth;
     document.getElementById('tools').style.height = '200px';
@@ -202,12 +204,20 @@ function openTools(option, size='400px') {
     document.getElementById('tools').style.width = size;
     document.getElementById('tools').style.height = Math.round(document.getElementById(idFromNum(currentNum)).height * images[currentNum - 1].scale).toString() + 'px';
     document.getElementById('image-heading').style.top = '2em';
-    document.getElementById('label').style.display = 'none';
+    //document.getElementById('label').style.display = 'none';
     document.getElementById('label').style.top = '8em';
     document.getElementById('tools').style.right = '0';
   } else {
     console.log('Option is not bottom or right!');
   }
+}
+
+function showMessage(message) {
+  document.getElementById('snackbar').innerHTML = message;
+  document.getElementById('snackbar').className = 'show';
+  setTimeout(() => {
+    document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace("show", "");
+  }, 3000);
 }
 
 function setBounds(x, y, width, height, num) {
@@ -234,7 +244,7 @@ function draw() {
     strokeWeight(2);
     stroke(transparentRed);
     fill(transparentRed);
-    if (mouseHolding) {
+    if (mouseHolding && mousePressedX < images[currentNum - 1].bounds.width) {
       rect(mousePressedX, mousePressedY, mouseX - mousePressedX, mouseY - mousePressedY);
     }
     for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
@@ -254,32 +264,43 @@ function draw() {
     if (images[currentNum - 1].selectedRectIndex != null && document.getElementById('label-input') === document.activeElement) {
       images[currentNum - 1].rects[images[currentNum - 1].selectedRectIndex].label = document.getElementById('label-input').value;
     }
+
+    document.body.style.cursor = 'default';
+    for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
+      var rectangle = images[currentNum - 1].rects[i];
+      if (mouseInRegion(rectangle.x, rectangle.y, rectangle.width, rectangle.height)) {
+        document.body.style.cursor = 'pointer';
+      }
+    }
   }
 }
 
 function mouseInRegion(x, y, width, height) {
-  var xTest;
-  var yTest;
+  var xInRegion;
+  var yInRegion;
   if (width > 0) {
-    xTest = mouseX > x && mouseX < x + width;
+    xInRegion = mouseX > x && mouseX < x + width;
   } else if (width < 0) {
-    xTest = mouseX > x + width && mouseX < x;
+    xInRegion = mouseX > x + width && mouseX < x;
   } else {
     console.log('width is 0!');
   }
   if (height > 0) {
-    yTest = mouseY > y && mouseY < y + height;
+    yInRegion = mouseY > y && mouseY < y + height;
   } else if (height < 0) {
-    yTest = mouseY > y + height && mouseY < y;
+    yInRegion = mouseY > y + height && mouseY < y;
   } else {
     console.log('height is 0!');
   }
-  console.log(`mouse in region: ${xTest && yTest}!`);
 
-  return xTest && yTest;
+  return xInRegion && yInRegion;
 }
 
 function mousePressed() {
+  mousePressedX = mouseX;
+  mousePressedY = mouseY;
+  mouseHolding = true;
+
   if (images.length < 1) {
     return;
   }
@@ -294,15 +315,18 @@ function mousePressed() {
       images[currentNum - 1].selectedRectIndex = i;
 
       document.getElementById('label-input').value = images[currentNum - 1].rects[images[currentNum - 1].selectedRectIndex].label;
+      document.getElementById('label-input').focus();
     }
   }
-
-  mousePressedX = mouseX;
-  mousePressedY = mouseY;
-  mouseHolding = true;
 }
 
 function mouseReleased() {
+  if (mouseHolding && mousePressedX > images[currentNum - 1].bounds.width) {
+    mouseHolding = false;
+    return;
+  }
+  console.log(mousePressedX);
+
   mouseHolding = false;
 
   if (images.length < 1) {
@@ -328,10 +352,12 @@ function mouseReleased() {
 
   images[currentNum - 1].selectedRectIndex = images[currentNum - 1].rects.length - 1;
   document.getElementById('label-input').value = '';
+  document.getElementById('label-input').focus();
 
   document.getElementById('label').style.display = 'block';
-  document.getElementById('generate').style.display = 'inline-block';
+  document.getElementById('generate').style.display = 'inline';
   document.getElementById('generate').onclick = () => {
+    document.getElementById('code-box').style.display = 'block';
     document.getElementById('code-box').value = "";
     document.getElementById('code-box').value += "[";
     for (var i = 0; i < images.length; i++) {
@@ -360,6 +386,24 @@ function mouseReleased() {
     }
     document.getElementById('code-box').value += "]";
   }
+}
+
+document.addEventListener('keyup', (e) => {
+  if (e.keyCode === 8 || e.keyCode === 46) {
+    if (images.length > 0) {
+      if ('selectedRectIndex' in images[currentNum - 1]) {
+        if (document.activeElement != document.getElementById('label-input')) {
+          deleteSelectedRect();
+        }
+      }
+    }
+  }
+});
+
+function deleteSelectedRect() {
+    images[currentNum - 1].rects.splice(images[currentNum - 1].selectedRectIndex, 1);
+    images[currentNum - 1].selectedRectIndex = null;
+    document.getElementById('label-input').value = '';
 }
 
 function windowResized() {
