@@ -78,3 +78,37 @@ h2 span {
 label {
   font-size: 1.5em;
 }
+
+button {
+  border: 0 solid;
+}
+
+#generate {
+  position: absolute;
+  padding: 5px 10px;
+  bottom: 5em;
+  display: none;
+}
+
+.code-box {
+  position: relative;
+  margin-top: 16em;
+  height: 20em;
+  width: 500px;
+}
+
+.navigation {
+  position: absolute;
+  bottom: 2em;
+  display: none;
+}
+
+#left {
+  left: 2em;
+  padding: 2em;
+}
+
+#right {
+  left: 8em;
+  padding: 2em;
+}
