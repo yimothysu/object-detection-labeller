@@ -216,7 +216,7 @@ function showMessage(message) {
   document.getElementById('snackbar').innerHTML = message;
   document.getElementById('snackbar').className = 'show';
   setTimeout(() => {
-    document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace("show", "");
+    document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace('show', '');
   }, 3000);
 }
 
@@ -358,13 +358,13 @@ function mouseReleased() {
   document.getElementById('generate').style.display = 'inline';
   document.getElementById('generate').onclick = () => {
     document.getElementById('code-box').style.display = 'block';
-    document.getElementById('code-box').value = "";
-    document.getElementById('code-box').value += "[";
+    document.getElementById('code-box').value = '';
+    document.getElementById('code-box').value += '[';
     for (var i = 0; i < images.length; i++) {
       var currentImage = images[i];
       var currentScale = currentImage.scale;
-      document.getElementById('code-box').value += "{'image': '" + currentImage.name + "', 'annotations': "
-      document.getElementById('code-box').value += "["
+      document.getElementById('code-box').value += `{"image":"${currentImage.name}","annotations":`;
+      document.getElementById('code-box').value += '['
       for (var j = 0; j < currentImage.rects.length; j++) {
         var rect = currentImage.rects[j];
         var height = rect.height/currentScale;
@@ -373,18 +373,18 @@ function mouseReleased() {
         var y = Math.round(rect.y/currentScale + height/2).toString();
         height = Math.round(Math.abs(height).toString());
         width = Math.round(Math.abs(width).toString());
-        document.getElementById('code-box').value += "{'coordinates': {'height': " + height + ", 'width': " + width + ", 'x': " + x + ", 'y': " + y + "}, 'label': '" + rect.label + "'}";
+        document.getElementById('code-box').value += `{"coordinates":{"height":${height},"width":${width},"x":${x},"y":${y}},"label":"${rect.label}"}`;
         if (j !== currentImage.rects.length - 1) {
-          document.getElementById('code-box').value += ", ";
+          document.getElementById('code-box').value += ',';
         }
       }
-      document.getElementById('code-box').value += "]"
-      document.getElementById('code-box').value += "}";
+      document.getElementById('code-box').value += ']'
+      document.getElementById('code-box').value += '}';
       if (i !== images.length - 1) {
-        document.getElementById('code-box').value += ", ";
+        document.getElementById('code-box').value += ',';
       }
     }
-    document.getElementById('code-box').value += "]";
+    document.getElementById('code-box').value += ']';
   }
 }
 
