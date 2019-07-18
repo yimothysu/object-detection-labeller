@@ -42,6 +42,8 @@ var mousePressedX;
 var mousePressedY;
 var mouseHolding;
 
+var firstDrag = true;
+
 const lineToEdge = 20;
 
 function setup() {
@@ -187,8 +189,13 @@ function onImageLoad(num) {
         size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
       };
     }
+    hideHeadingAndLabel()
   }
-  showMessage('Drag the cursor to form a rectangle to annotate!');
+  showMessage('Drag the cursor to form a rectangle!');
+}
+
+function hideHeadingAndLabel() {
+  document.getElementById('heading-and-label').style.display = 'none';
 }
 
 function openTools(option, size='400px') {
@@ -217,7 +224,7 @@ function showMessage(message) {
   document.getElementById('snackbar').className = 'show';
   setTimeout(() => {
     document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace('show', '');
-  }, 3000);
+  }, 4000);
 }
 
 function setBounds(x, y, width, height, num) {
@@ -243,6 +250,7 @@ function draw() {
     //drawDashedBorder();
     strokeWeight(2);
     stroke(transparentRed);
+    context.setLineDash([]);
     fill(transparentRed);
     if (mouseHolding && mousePressedX < images[currentNum - 1].bounds.width) {
       rect(mousePressedX, mousePressedY, mouseX - mousePressedX, mouseY - mousePressedY);
@@ -252,6 +260,11 @@ function draw() {
       fill(transparentRed);
       stroke(transparentRed);
       strokeWeight(2);
+      if (i === images[currentNum - 1].selectedRectIndex) {
+        context.setLineDash([10, 10]);
+      } else {
+        context.setLineDash([]);
+      }
       rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
       if (rectangle.label !== '') {
         //console.log('rect label not null!');
@@ -320,6 +333,12 @@ function mousePressed() {
   }
 }
 
+function onFirstDrag() {
+  document.getElementById('mouse-drag').style.display = 'none';
+  document.getElementById('heading-and-label').style.display = 'block';
+  showMessage('Press delete to remove!');
+}
+
 function mouseReleased() {
   if (mouseHolding && mousePressedX > images[currentNum - 1].bounds.width) {
     mouseHolding = false;
@@ -340,6 +359,11 @@ function mouseReleased() {
   //Avoid misclicks/misdrags
   if (Math.abs(mousePressedX - mouseX) < 10 || Math.abs(mousePressedY - mouseY) < 10) {
     return;
+  }
+
+  if (firstDrag) {
+    firstDrag = false;
+    onFirstDrag();
   }
 
   images[currentNum - 1].rects.push({

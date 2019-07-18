@@ -2,6 +2,15 @@
   position: absolute;
 }
 
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 h1 {
   z-index: 1;
   left: 0;
@@ -36,12 +45,13 @@ h2 span {
 }
 
 #upload-icon {
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   margin: auto;
-  width: 110px;
+  width: 27em;
 }
 
 #upload-icon path {
@@ -52,7 +62,7 @@ h2 span {
   z-index: 1;
   text-align: center;
   display: none;
-  background-color: #98a9b5;
+  background-color: #a9bec2; /*#98a9b5*/
 }
 
 #image-heading {
@@ -117,16 +127,19 @@ button {
   position: absolute;
   bottom: 2em;
   display: none;
+  padding: 1.5em;
+  opacity: 0.7;
+  color: #e8e8e8;
+  background-color: #303030;
+  font-size: 14pt;
 }
 
 #left {
   left: 2em;
-  padding: 2em;
 }
 
 #right {
-  left: 8em;
-  padding: 2em;
+  left: 7em;
 }
 
 #snackbar {
@@ -145,8 +158,8 @@ button {
 
 #snackbar.show {
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+  animation: fadein 0.5s, fadeout 0.5s 3.5s;
 }
 
 @-webkit-keyframes fadein {
@@ -167,4 +180,12 @@ button {
 @keyframes fadeout {
   from {bottom: 2em; opacity: 1;}
   to {bottom: 0; opacity: 0;}
+}
+
+#mouse-drag {
+  position: absolute;
+  left: 50% !important;
+  transform: translateX(-40%) !important;
+  top: 40%;
+  transform: translateY(-50%);
 }
