@@ -45,6 +45,7 @@ var mouseHolding;
 var firstDrag = true;
 
 const lineToEdge = 20;
+const messageTimeout = 4000;
 
 function setup() {
   darkBlue = color(21, 31, 59);
@@ -189,7 +190,11 @@ function onImageLoad(num) {
         size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
       };
     }
-    hideHeadingAndLabel()
+    if (firstDrag) {
+      hideHeadingAndLabel();
+    } else {
+      document.getElementById('label-input').value = '';
+    }
   }
   showMessage('Drag the cursor to form a rectangle!');
 }
@@ -224,7 +229,13 @@ function showMessage(message) {
   document.getElementById('snackbar').className = 'show';
   setTimeout(() => {
     document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace('show', '');
-  }, 4000);
+  }, messageTimeout);
+}
+
+function showDelayedMessage(message, delay) {
+  setTimeout(() => {
+    showMessage(message);
+  }, delay);
 }
 
 function setBounds(x, y, width, height, num) {
@@ -336,7 +347,8 @@ function mousePressed() {
 function onFirstDrag() {
   document.getElementById('mouse-drag').style.display = 'none';
   document.getElementById('heading-and-label').style.display = 'block';
-  showMessage('Press delete to remove!');
+  showMessage('If you make a mistake, press delete to remove.');
+  showDelayedMessage('When you\'re done labelling, click "generate".', 5000);
 }
 
 function mouseReleased() {

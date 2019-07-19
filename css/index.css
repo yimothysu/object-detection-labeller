@@ -83,4 +83,9 @@ h1, h2, h3, h4, h5, h6, a {
 .section-2 {
   background-color: #f7f7f7;
   color: #171717;
+  padding: 2em;
+}
+
+.heading-left {
+  padding-left: 2em;
 }
