@@ -96,7 +96,7 @@ button {
   bottom: 0.5em;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 0.5em 1em;
+  width: 350px;
   display: none;
 }
 
