@@ -11,8 +11,8 @@
     <h1 id="title-heading" class="absolute absolute-center-x">Object Detection Labeller</h1>
     <h2 id="subtitle-heading" class="absolute absolute-center-x">Drag in one or more images to start!</h2>
     <img id="upload-icon" src="image/upload_icon.svg" alt="upload icon">
-    <button id="left" class="navigation noselect" tabindex="1">&lt</button>
-    <button id="right" class="navigation noselect" tabindex="2">&gt</button>
+    <button id="left" class="navigation noselect" tabindex="1"><img src="image/left_arrow.svg" alt="left arrow"></button>
+    <button id="right" class="navigation noselect" tabindex="2"><img src="image/right_arrow.svg" alt="right arrow"></button>
     <div id="tools" class="absolute" tabindex="-1">
       <div id="mouse-drag">
         <img src="image/mouse_drag.gif" alt="Mouse Drag">
@@ -23,6 +23,22 @@
         <form id="label" method="POST" onsubmit="labelRect(event)"><label for="label-input">Label: </label><input type="text" id="label-input" name="label" tabindex="0"></form>
       </div>
       <button id="generate" class="noselect">Generate</button>
+      <p id="generate-text">Great! Now, put the JSON file in a folder with all the images you used to annotate. It's ready to use in Create ML and Turi Create!</p>
+      <button id="help-button" type="button">?
+        <div id="help">
+          <h1>Help</h1>
+          <br>
+          <p>To label, form a rectangle by dragging your mouse around the relevant object. Then type the label.</p>
+          <br>
+          <p>To edit, click on the rectangle to edit and edit the label text field.</p>
+          <br>
+          <p>To delete, deselect the label text field and press delete.</p>
+          <br>
+          <p>To add more images, drop them on the current image.</p>
+          <br>
+          <p>For other questions, email me at <a href="mailto:jimsu2012@gmail.com">jimsu2012@gmail.com</a>.</p>
+        </div>
+      </button>
     </div>
     <div id="snackbar">Hello</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>

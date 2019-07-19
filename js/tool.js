@@ -43,6 +43,7 @@ var mousePressedY;
 var mouseHolding;
 
 var firstDrag = true;
+var generated = false;
 
 const lineToEdge = 20;
 const messageTimeout = 4000;
@@ -376,6 +377,11 @@ function download(text, name, type) {
 }
 
 function generate() {
+  if (!generated) {
+    document.getElementById('generate-text').style.display = 'block';
+    generated = true;
+  }
+
   var string = '';
   string += '[';
   for (var i = 0; i < images.length; i++) {
