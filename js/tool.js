@@ -215,7 +215,6 @@ function openTools(option, size='400px') {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
   document.getElementById('tools').style.display = 'block';
-  document.getElementById('code-box').style.width = size - 2;
   if (option === 'bottom') {
     document.getElementById('tools').style.width = windowWidth;
     document.getElementById('tools').style.height = '200px';
@@ -403,7 +402,6 @@ function generate() {
       string += ',';
     }
   }
-  //document.getElementById('code-box').value = string;
   string += ']';
   download(string, 'labels.json', 'text/json');
 }

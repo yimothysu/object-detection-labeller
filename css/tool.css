@@ -81,12 +81,11 @@ button {
   border: 0 solid;
   border-radius: 1em;
   background-color: #f79823;
-  font-size: 14pt;
-  position: relative;
-  margin-top: 10em;
-  margin-left: auto;
-  margin-right: auto;
-  width: 8em;
+  font-size: 24pt;
+  position: absolute;
+  bottom: 4em;
+  left: 50%;
+  transform: translate(-50%, -50%);
   padding: 0.5em 1em;
   display: none;
 }
@@ -94,17 +93,6 @@ button {
 #generate:hover {
   background-color: #db8418;
   cursor: pointer;
-}
-
-#code-box {
-  display: none;
-  position: relative;
-  margin-top: 16em;
-  margin-left: auto;
-  margin-right: auto;
-  height: 20em;
-  width: 500px;
-  font-family: monospace;
 }
 
 .navigation {
