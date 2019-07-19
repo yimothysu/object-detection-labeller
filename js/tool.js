@@ -116,33 +116,41 @@ function gotFile(file) {
   document.getElementById('right').style.display = 'block';
 
   document.getElementById('left').onclick = () => {
-    var imageId = idFromNum(currentNum);
-    if (currentNum - 1 < 1) {
-      currentNum = images.length;
-    } else {
-      currentNum--;
-    }
-    if ('size' in images[currentNum - 1].toolsInfo) {
-      openTools(images[currentNum - 1].toolsInfo.direction, images[currentNum - 1].toolsInfo.size);
-    } else {
-      openTools(images[currentNum - 1].toolsInfo.direction);
-    }
-    document.getElementById('label-input').value = '';
+    left();
   };
   document.getElementById('right').onclick = () => {
-    var imageId = idFromNum(currentNum);
-    if (currentNum + 1 > images.length) {
-      currentNum = 1;
-    } else {
-      currentNum++;
-    }
-    if ('size' in images[currentNum - 1].toolsInfo) {
-      openTools(images[currentNum - 1].toolsInfo.direction, images[currentNum - 1].toolsInfo.size);
-    } else {
-      openTools(images[currentNum - 1].toolsInfo.direction);
-    }
-    document.getElementById('label-input').value = '';
-  };
+    right();
+  }
+}
+
+function left() {
+  var imageId = idFromNum(currentNum);
+  if (currentNum - 1 < 1) {
+    currentNum = images.length;
+  } else {
+    currentNum--;
+  }
+  if ('size' in images[currentNum - 1].toolsInfo) {
+    openTools(images[currentNum - 1].toolsInfo.direction, images[currentNum - 1].toolsInfo.size);
+  } else {
+    openTools(images[currentNum - 1].toolsInfo.direction);
+  }
+  document.getElementById('label-input').value = '';
+}
+
+function right() {
+  var imageId = idFromNum(currentNum);
+  if (currentNum + 1 > images.length) {
+    currentNum = 1;
+  } else {
+    currentNum++;
+  }
+  if ('size' in images[currentNum - 1].toolsInfo) {
+    openTools(images[currentNum - 1].toolsInfo.direction, images[currentNum - 1].toolsInfo.size);
+  } else {
+    openTools(images[currentNum - 1].toolsInfo.direction);
+  }
+  document.getElementById('label-input').value = '';
 }
 
 function dragOver() {
@@ -285,7 +293,7 @@ function draw() {
         text(rectangle.label, rectangle.x + rectangle.width / 2 - textWidth(rectangle.label) / 2, rectangle.y + rectangle.height / 2);
       }
     }
-    if (images[currentNum - 1].selectedRectIndex != null && document.getElementById('label-input') === document.activeElement) {
+    if (images[currentNum - 1].selectedRectIndex != null && isLabelInputFocused()) {
       images[currentNum - 1].rects[images[currentNum - 1].selectedRectIndex].label = document.getElementById('label-input').value;
     }
 
@@ -351,6 +359,55 @@ function onFirstDrag() {
   showDelayedMessage('When you\'re done labelling, click "generate".', 5000);
 }
 
+function isLabelInputFocused() {
+  return document.activeElement === document.getElementById('label-input');
+}
+
+function download(text, name, type) {
+  var file = new Blob([text], { type: type });
+  var isIE = /*@cc_on!@*/ false || !!document.documentMode;
+  if (isIE) {
+    window.navigator.msSaveOrOpenBlob(file, name);
+  } else {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(file);
+    a.download = name;
+    a.click();
+  }
+}
+
+function generate() {
+  var string = '';
+  string += '[';
+  for (var i = 0; i < images.length; i++) {
+    var currentImage = images[i];
+    var currentScale = currentImage.scale;
+    string += `{"image":"${currentImage.name}","annotations":`;
+    string += '['
+    for (var j = 0; j < currentImage.rects.length; j++) {
+      var rect = currentImage.rects[j];
+      var height = rect.height/currentScale;
+      var width = rect.width/currentScale;
+      var x = Math.round(rect.x/currentScale + width/2).toString();
+      var y = Math.round(rect.y/currentScale + height/2).toString();
+      height = Math.round(Math.abs(height).toString());
+      width = Math.round(Math.abs(width).toString());
+      string += `{"coordinates":{"height":${height},"width":${width},"x":${x},"y":${y}},"label":"${rect.label}"}`;
+      if (j !== currentImage.rects.length - 1) {
+        string += ',';
+      }
+    }
+    string += ']'
+    string += '}';
+    if (i !== images.length - 1) {
+      string += ',';
+    }
+  }
+  //document.getElementById('code-box').value = string;
+  string += ']';
+  download(string, 'labels.json', 'text/json');
+}
+
 function mouseReleased() {
   if (mouseHolding && mousePressedX > images[currentNum - 1].bounds.width) {
     mouseHolding = false;
@@ -393,45 +450,28 @@ function mouseReleased() {
   document.getElementById('label').style.display = 'block';
   document.getElementById('generate').style.display = 'inline';
   document.getElementById('generate').onclick = () => {
-    document.getElementById('code-box').style.display = 'block';
-    document.getElementById('code-box').value = '';
-    document.getElementById('code-box').value += '[';
-    for (var i = 0; i < images.length; i++) {
-      var currentImage = images[i];
-      var currentScale = currentImage.scale;
-      document.getElementById('code-box').value += `{"image":"${currentImage.name}","annotations":`;
-      document.getElementById('code-box').value += '['
-      for (var j = 0; j < currentImage.rects.length; j++) {
-        var rect = currentImage.rects[j];
-        var height = rect.height/currentScale;
-        var width = rect.width/currentScale;
-        var x = Math.round(rect.x/currentScale + width/2).toString();
-        var y = Math.round(rect.y/currentScale + height/2).toString();
-        height = Math.round(Math.abs(height).toString());
-        width = Math.round(Math.abs(width).toString());
-        document.getElementById('code-box').value += `{"coordinates":{"height":${height},"width":${width},"x":${x},"y":${y}},"label":"${rect.label}"}`;
-        if (j !== currentImage.rects.length - 1) {
-          document.getElementById('code-box').value += ',';
-        }
-      }
-      document.getElementById('code-box').value += ']'
-      document.getElementById('code-box').value += '}';
-      if (i !== images.length - 1) {
-        document.getElementById('code-box').value += ',';
-      }
-    }
-    document.getElementById('code-box').value += ']';
-  }
+    generate();
+  };
 }
 
 document.addEventListener('keyup', (e) => {
   if (e.keyCode === 8 || e.keyCode === 46) {
     if (images.length > 0) {
       if ('selectedRectIndex' in images[currentNum - 1]) {
-        if (document.activeElement != document.getElementById('label-input')) {
+        if (!isLabelInputFocused()) {
           deleteSelectedRect();
         }
       }
+    }
+  }
+  if (e.keyCode === 37) {
+    if (!isLabelInputFocused()) {
+      left();
+    }
+  }
+  if (e.keyCode === 39) {
+    if (!isLabelInputFocused()) {
+      right();
     }
   }
 });

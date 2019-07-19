@@ -2,6 +2,11 @@
   position: absolute;
 }
 
+.absolute-center-x {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -11,46 +16,25 @@
   user-select: none;
 }
 
-h1 {
+h1, h2 {
   z-index: 1;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
   color: #151f3b;
 }
 
 #title-heading {
-  width: 12em;
   top: 2em;
   font-size: 3em;
 }
 
-h2 {
-  z-index: 1;
-  color: #151f3b;
-}
-
-h2 span {
-  font-family: 'Heebo';
-}
-
 #subtitle-heading {
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 16.5em;
   top: 8em;
 }
 
 #upload-icon {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 27em;
 }
 
