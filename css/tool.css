@@ -140,6 +140,11 @@ button {
   height: 5em;
 }
 
+#help-button img {
+  width: 2.5em;
+  vertical-align: middle;
+}
+
 #help-button:hover #help {
   opacity: 1;
   visibility: visible;
