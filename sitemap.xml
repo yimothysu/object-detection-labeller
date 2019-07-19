@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <url>
+    <loc>https://jimsu2012.github.io/object-detection-labeller/</loc>
+    <lastmod>2019-07-19T22:49:18+00:00</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://jimsu2012.github.io/object-detection-labeller/tool</loc>
+    <lastmod>2019-07-19T22:49:18+00:00</lastmod>
+    <priority>0.90</priority>
+  </url>
+</urlset>
