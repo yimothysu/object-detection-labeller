@@ -38,15 +38,22 @@ var currentNum = 0;
 */
 var images = [];
 
+var uploadIconLoaded = false;
+var uploadIcon;
+
 var mousePressedX;
 var mousePressedY;
 var mouseHolding;
+
+var dragging = false;
 
 var firstDrag = true;
 var generated = false;
 
 const lineToEdge = 20;
 const messageTimeout = 4000;
+const uploadIconWidth = 320;
+const uploadIconHeight = 450;
 
 function setup() {
   darkBlue = color(21, 31, 59);
@@ -65,6 +72,12 @@ function setup() {
 
   htmlCanvas = document.querySelector('canvas');
   context = htmlCanvas.getContext('2d');
+
+  uploadIcon  = new Image();
+  uploadIcon.onload = () => {
+    uploadIconLoaded = true;
+  };
+  uploadIcon.src = 'image/upload_icon.svg';
 }
 
 function drawDashedBorder() {
@@ -153,13 +166,11 @@ function right() {
 }
 
 function dragOver() {
-  background(124, 166, 194);
-  drawDashedBorder();
+  dragging = true;
 }
 
 function dragLeave() {
-  background(184, 205, 219);
-  drawDashedBorder();
+  dragging = false;
 }
 
 function onImageLoad(num) {
@@ -261,6 +272,14 @@ function draw() {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
   if (images.length === 0) {
+    if (uploadIconLoaded) {
+      if (!dragging) {
+        background(184, 205, 219);
+      } else {
+        background(124, 166, 194);
+      }
+      context.drawImage(uploadIcon, windowWidth/2 - uploadIconWidth/2, windowHeight/2 - uploadIconHeight/2, uploadIconWidth, uploadIconHeight);
+    }
     drawDashedBorder();
   }
   if (images.length > 0) {
