@@ -413,6 +413,10 @@ function generate() {
 }
 
 function mouseReleased() {
+  if (images.length < 1) {
+    return;
+  }
+
   if (mouseHolding && mousePressedX > images[currentNum - 1].bounds.width) {
     mouseHolding = false;
     return;
@@ -420,10 +424,6 @@ function mouseReleased() {
   console.log(mousePressedX);
 
   mouseHolding = false;
-
-  if (images.length < 1) {
-    return;
-  }
 
   if (mouseX > images[currentNum - 1].bounds.width) {
     return;
