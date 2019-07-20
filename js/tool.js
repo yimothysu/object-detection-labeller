@@ -123,10 +123,11 @@ function gotFile(file) {
 
   document.getElementById('title-heading').style.display = 'none';
   document.getElementById('subtitle-heading').style.display = 'none';
-  document.getElementById('upload-icon').style.display = 'none';
-  document.getElementById('left').style.display = 'block';
-  document.getElementById('right').style.display = 'block';
-
+  if (images.length > 1) {
+    console.log('images length > 1!');
+    document.getElementById('left').style.display = 'block';
+    document.getElementById('right').style.display = 'block';
+  }
   document.getElementById('left').onclick = () => {
     left();
   };
