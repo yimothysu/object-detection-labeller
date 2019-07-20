@@ -35,7 +35,7 @@ h1, h2 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 27em;
+  width: 20em;
 }
 
 #upload-icon path {

@@ -59,14 +59,12 @@ function setup() {
   canvas.style('display', 'block');
   background(184, 205, 219);
 
-  canvas.dragOver(dragOver)
-  canvas.dragLeave(dragLeave)
+  canvas.dragOver(dragOver);
+  canvas.dragLeave(dragLeave);
   canvas.drop(gotFile);
 
   htmlCanvas = document.querySelector('canvas');
   context = htmlCanvas.getContext('2d');
-
-  drawDashedBorder();
 }
 
 function drawDashedBorder() {
@@ -262,6 +260,9 @@ function labelRect(event) {
 function draw() {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
+  if (images.length === 0) {
+    drawDashedBorder();
+  }
   if (images.length > 0) {
     background(124, 166, 194);
     const bounds = images[currentNum - 1].bounds;
@@ -487,5 +488,6 @@ function deleteSelectedRect() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight)
+  resizeCanvas(windowWidth, windowHeight);
+  background(184, 205, 219);
 }
