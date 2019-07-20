@@ -45,13 +45,17 @@ var mousePressedX;
 var mousePressedY;
 var mouseHolding;
 
-var dragging = false;
+var fileDragging = false;
+var resizing = false;
+var resizingRectIndex;
+var resizingDirection;
 
 var firstDrag = true;
 var generated = false;
 
 const lineToEdge = 20;
 const messageTimeout = 4000;
+const resizeEpsilon = 10;
 const uploadIconWidth = 320;
 const uploadIconHeight = 450;
 
@@ -167,11 +171,11 @@ function right() {
 }
 
 function dragOver() {
-  dragging = true;
+  fileDragging = true;
 }
 
 function dragLeave() {
-  dragging = false;
+  fileDragging = false;
 }
 
 function onImageLoad(num) {
@@ -269,12 +273,92 @@ function labelRect(event) {
   return false;
 }
 
-function draw() {
+function refreshImageHeading() {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
+}
+
+function drawCurrentRectangle(bounds) {
+  strokeWeight(2);
+  stroke(transparentRed);
+  context.setLineDash([]);
+  fill(transparentRed);
+  if (mouseHolding && mousePressedX < images[currentNum - 1].bounds.width) {
+    rect(mousePressedX, mousePressedY, mouseX - mousePressedX, mouseY - mousePressedY);
+  }
+}
+
+function drawRectangles() {
+  for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
+    const rectangle = images[currentNum - 1].rects[i];
+    fill(transparentRed);
+    stroke(transparentRed);
+    strokeWeight(2);
+    if (i === images[currentNum - 1].selectedRectIndex) {
+      context.setLineDash([10, 10]);
+    } else {
+      context.setLineDash([]);
+    }
+    rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    if (rectangle.label !== '') {
+      textSize(20);
+      fill(white);
+      noStroke();
+      text(rectangle.label, rectangle.x + rectangle.width / 2 - textWidth(rectangle.label) / 2, rectangle.y + rectangle.height / 2);
+    }
+  }
+}
+
+function stopResizing() {
+  resizingDirection = '';
+  resizingRectIndex = null;
+  resizing = false;
+}
+
+function stopResizingIfNotHolding() {
+  if (!mouseHolding) {
+    stopResizing();
+  }
+}
+
+function resizeDirection(direction, i) {
+  resizingDirection = direction;
+  document.body.style.cursor = direction + '-resize';
+  if (mouseHolding) {
+    return;
+  }
+  resizingRectIndex = i;
+  resizing = true;
+}
+
+function manageCursor() {
+  document.body.style.cursor = 'default';
+  for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
+    var rectangle = images[currentNum - 1].rects[i];
+    const re = resizeEpsilon;
+    if (mouseInRegion(rectangle.x - re, rectangle.y, re * 2, rectangle.height)) {
+      resizeDirection('w', i);
+    } else if (mouseInRegion(rectangle.x + rectangle.width - re, rectangle.y, re * 2, rectangle.height)) {
+      resizeDirection('e', i);
+    } else if (mouseInRegion(rectangle.x, rectangle.y - re, rectangle.width, re * 2)) {
+      resizeDirection('n', i);
+    } else if (mouseInRegion(rectangle.x, rectangle.y + rectangle.height - re, rectangle.width, re * 2)) {
+      resizeDirection('s', i);
+    } else if (mouseInRegion(rectangle.x, rectangle.y, rectangle.width, rectangle.height)) {
+      document.body.style.cursor = 'pointer';
+      stopResizingIfNotHolding();
+    } else {
+      stopResizingIfNotHolding();
+    }
+  }
+}
+
+function draw() {
+  refreshImageHeading();
+
   if (images.length === 0) {
     if (uploadIconLoaded) {
-      if (!dragging) {
+      if (!fileDragging) {
         background(184, 205, 219);
       } else {
         background(124, 166, 194);
@@ -283,46 +367,37 @@ function draw() {
     }
     drawDashedBorder();
   }
+
   if (images.length > 0) {
     background(124, 166, 194);
     const bounds = images[currentNum - 1].bounds;
     context.drawImage(document.getElementById(idFromNum(currentNum)), bounds.x, bounds.y, bounds.width, bounds.height);
-    //drawDashedBorder();
-    strokeWeight(2);
-    stroke(transparentRed);
-    context.setLineDash([]);
-    fill(transparentRed);
-    if (mouseHolding && mousePressedX < images[currentNum - 1].bounds.width) {
-      rect(mousePressedX, mousePressedY, mouseX - mousePressedX, mouseY - mousePressedY);
+    if (!resizing) {
+      drawCurrentRectangle(bounds);
     }
-    for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
-      const rectangle = images[currentNum - 1].rects[i]
-      fill(transparentRed);
-      stroke(transparentRed);
-      strokeWeight(2);
-      if (i === images[currentNum - 1].selectedRectIndex) {
-        context.setLineDash([10, 10]);
-      } else {
-        context.setLineDash([]);
-      }
-      rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-      if (rectangle.label !== '') {
-        //console.log('rect label not null!');
-        textSize(20);
-        fill(white);
-        noStroke();
-        text(rectangle.label, rectangle.x + rectangle.width / 2 - textWidth(rectangle.label) / 2, rectangle.y + rectangle.height / 2);
-      }
-    }
+    drawRectangles();
     if (images[currentNum - 1].selectedRectIndex != null && isLabelInputFocused()) {
       images[currentNum - 1].rects[images[currentNum - 1].selectedRectIndex].label = document.getElementById('label-input').value;
     }
-
-    document.body.style.cursor = 'default';
-    for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
-      var rectangle = images[currentNum - 1].rects[i];
-      if (mouseInRegion(rectangle.x, rectangle.y, rectangle.width, rectangle.height)) {
-        document.body.style.cursor = 'pointer';
+    manageCursor();
+    if (mouseHolding && resizing) {
+      switch (resizingDirection) {
+        case 'n':
+          images[currentNum - 1].rects[resizingRectIndex].height = images[currentNum - 1].rects[resizingRectIndex].y - mouseY + images[currentNum - 1].rects[resizingRectIndex].height;
+          images[currentNum - 1].rects[resizingRectIndex].y = mouseY;
+          break;
+        case 's':
+          images[currentNum - 1].rects[resizingRectIndex].height = mouseY - images[currentNum - 1].rects[resizingRectIndex].y;
+          break;
+        case 'w':
+          images[currentNum - 1].rects[resizingRectIndex].width = images[currentNum - 1].rects[resizingRectIndex].x - mouseX + images[currentNum - 1].rects[resizingRectIndex].width;
+          images[currentNum - 1].rects[resizingRectIndex].x = mouseX;
+          break;
+        case 'e':
+          images[currentNum - 1].rects[resizingRectIndex].width = mouseX - images[currentNum - 1].rects[resizingRectIndex].x;
+          break;
+        default:
+          console.log('ERROR! Resizing but no resizeDirection!');
       }
     }
   }
@@ -366,7 +441,6 @@ function mousePressed() {
     var rectangle = images[currentNum - 1].rects[i];
     if (mouseInRegion(rectangle.x, rectangle.y, rectangle.width, rectangle.height)) {
       images[currentNum - 1].selectedRectIndex = i;
-
       document.getElementById('label-input').value = images[currentNum - 1].rects[images[currentNum - 1].selectedRectIndex].label;
       document.getElementById('label-input').focus();
     }
@@ -445,6 +519,10 @@ function mouseReleased() {
   console.log(mousePressedX);
 
   mouseHolding = false;
+  if (resizing) {
+    stopResizing();
+    return;
+  }
 
   if (mouseX > images[currentNum - 1].bounds.width) {
     return;
