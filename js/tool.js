@@ -1,18 +1,18 @@
 window.onload = (e) => {
-    document.getElementById('tools').focus();
-}
+  document.getElementById('tools').focus();
+};
 
-var darkBlue;
+// var darkBlue;
+// var transparentGreen;
+// var transparentBlue;
 var transparentRed;
-var transparentGreen;
-var transparentBlue;
 var white;
 
 var canvas;
 var htmlCanvas;
 var context;
 var currentNum = 0;
-/*Format:
+/* Format:
 {
   name: '',
   bounds: {
@@ -60,10 +60,10 @@ const uploadIconWidth = 320;
 const uploadIconHeight = 450;
 
 function setup() {
-  darkBlue = color(21, 31, 59);
+  // darkBlue = color(21, 31, 59);
+  // transparentGreen = color(0, 255, 0, 125);
+  // transparentBlue = color(0, 0, 255, 125);
   transparentRed = color(255, 0, 0, 125);
-  transparentGreen = color(0, 255, 0, 125);
-  transparentBlue = color(0, 0, 255, 125);
   white = color(255, 255, 255);
 
   canvas = createCanvas(windowWidth, windowHeight);
@@ -77,7 +77,7 @@ function setup() {
   htmlCanvas = document.querySelector('canvas');
   context = htmlCanvas.getContext('2d');
 
-  uploadIcon  = new Image();
+  uploadIcon = new Image();
   uploadIcon.onload = () => {
     uploadIconLoaded = true;
   };
@@ -96,7 +96,7 @@ function drawDashedBorder() {
   context.setLineDash([]);
 }
 
-//Because HTML ids can't begin with numbers
+// Because HTML ids can't begin with numbers
 function idFromNum(id) {
   return 'image' + id.toString();
 }
@@ -107,12 +107,12 @@ function gotFile(file) {
   console.log('current num is ' + currentNum.toString());
   var img = createImg(file.data);
   let n = currentNum;
-  //img.attribute('onload', 'onImageLoad(n)');
+  // img.attribute('onload', 'onImageLoad(n)');
   img.style('display', 'none');
   img.id(idFromNum(currentNum));
   document.getElementById(idFromNum(currentNum)).onload = () => {
     onImageLoad(n);
-  }
+  };
   images.push({
     name: file.name,
     bounds: {
@@ -137,11 +137,10 @@ function gotFile(file) {
   };
   document.getElementById('right').onclick = () => {
     right();
-  }
+  };
 }
 
 function left() {
-  var imageId = idFromNum(currentNum);
   if (currentNum - 1 < 1) {
     currentNum = images.length;
   } else {
@@ -156,7 +155,6 @@ function left() {
 }
 
 function right() {
-  var imageId = idFromNum(currentNum);
   if (currentNum + 1 > images.length) {
     currentNum = 1;
   } else {
@@ -181,11 +179,11 @@ function dragLeave() {
 function onImageLoad(num) {
   const imageId = idFromNum(num);
   console.log(num);
-  console.log(images[num-1]);
+  console.log(images[num - 1]);
   images[num - 1].scale = windowWidth / document.getElementById(imageId).width;
   const currentScale = images[num - 1].scale;
-
-  if (windowHeight - document.getElementById(imageId).height * scale >= 200) {
+  /*
+  if (windowHeight - document.getElementById(imageId).height * currentScale >= 200) {
     context.drawImage(document.getElementById(imageId), 0, 0, windowWidth, document.getElementById(imageId).height * currentScale);
     setBounds(0, 0, windowWidth, document.getElementById(imageId).height * currentScale, num);
     openTools('bottom');
@@ -193,52 +191,52 @@ function onImageLoad(num) {
       direction: 'bottom'
     };
   } else {
-    if (document.getElementById(imageId).height * (windowWidth - 400) / document.getElementById(imageId).width <= windowHeight) {
-      images[num - 1].scale = (windowWidth - 400) / document.getElementById(imageId).width;
-      const currentScale = images[num - 1].scale;
-      context.drawImage(document.getElementById(imageId), 0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale);
-      setBounds(0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale, num)
-      openTools('right');
-      images[num - 1].toolsInfo = {
-        direction: 'right'
-      };
-    } else {
-      images[num - 1].scale = windowHeight / document.getElementById(imageId).height;
-      const currentScale = images[num - 1].scale;
-      context.drawImage(document.getElementById(imageId), 0, 0, document.getElementById(imageId).width * currentScale, windowHeight);
-      setBounds(0, 0, document.getElementById(imageId).width * currentScale, windowHeight, num);
-      openTools('right', (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px');
-      images[num - 1].toolsInfo = {
-        direction: 'right',
-        size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
-      };
-    }
-    if (firstDrag) {
-      hideHeadingAndLabel();
-    } else {
-      document.getElementById('label-input').value = '';
-    }
+  */
+  if (document.getElementById(imageId).height * (windowWidth - 400) / document.getElementById(imageId).width <= windowHeight) {
+    images[num - 1].scale = (windowWidth - 400) / document.getElementById(imageId).width;
+    context.drawImage(document.getElementById(imageId), 0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale);
+    setBounds(0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale, num);
+    openTools('right');
+    images[num - 1].toolsInfo = {
+      direction: 'right'
+    };
+  } else {
+    images[num - 1].scale = windowHeight / document.getElementById(imageId).height;
+    context.drawImage(document.getElementById(imageId), 0, 0, document.getElementById(imageId).width * currentScale, windowHeight);
+    setBounds(0, 0, document.getElementById(imageId).width * currentScale, windowHeight, num);
+    openTools('right', (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px');
+    images[num - 1].toolsInfo = {
+      direction: 'right',
+      size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
+    };
   }
-  showMessage('Drag the cursor to form a rectangle!');
+  if (firstDrag) {
+    hideHeadingAndLabel();
+  } else {
+    document.getElementById('label-input').value = '';
+  }
 }
+showMessage('Drag the cursor to form a rectangle!');
+// }
 
 function hideHeadingAndLabel() {
   document.getElementById('heading-and-label').style.display = 'none';
 }
 
-function openTools(option, size='400px') {
+function openTools(option, size = '400px') {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
   document.getElementById('tools').style.display = 'block';
-  if (option === 'bottom') {
+  /* if (option === 'bottom') {
     document.getElementById('tools').style.width = windowWidth;
     document.getElementById('tools').style.height = '200px';
     document.getElementById('tools').style.bottom = '100px';
-  } else if (option === 'right') {
+  } else */
+  if (option === 'right') {
     document.getElementById('tools').style.width = size;
     document.getElementById('tools').style.height = Math.round(document.getElementById(idFromNum(currentNum)).height * images[currentNum - 1].scale).toString() + 'px';
     document.getElementById('image-heading').style.top = '2em';
-    //document.getElementById('label').style.display = 'none';
+    // document.getElementById('label').style.display = 'none';
     document.getElementById('label').style.top = '8em';
     document.getElementById('tools').style.right = '0';
   } else {
@@ -363,7 +361,7 @@ function draw() {
       } else {
         background(124, 166, 194);
       }
-      context.drawImage(uploadIcon, windowWidth/2 - uploadIconWidth/2, windowHeight/2 - uploadIconHeight/2, uploadIconWidth, uploadIconHeight);
+      context.drawImage(uploadIcon, windowWidth / 2 - uploadIconWidth / 2, windowHeight / 2 - uploadIconHeight / 2, uploadIconWidth, uploadIconHeight);
     }
     drawDashedBorder();
   }
@@ -460,7 +458,7 @@ function isLabelInputFocused() {
 
 function download(text, name, type) {
   var file = new Blob([text], { type: type });
-  var isIE = /*@cc_on!@*/ false || !!document.documentMode;
+  var isIE = /* @cc_on!@ */ false || !!document.documentMode;
   if (isIE) {
     window.navigator.msSaveOrOpenBlob(file, name);
   } else {
@@ -483,13 +481,13 @@ function generate() {
     var currentImage = images[i];
     var currentScale = currentImage.scale;
     string += `{"image":"${currentImage.name}","annotations":`;
-    string += '['
+    string += '[';
     for (var j = 0; j < currentImage.rects.length; j++) {
       var rect = currentImage.rects[j];
-      var height = rect.height/currentScale;
-      var width = rect.width/currentScale;
-      var x = Math.round(rect.x/currentScale + width/2).toString();
-      var y = Math.round(rect.y/currentScale + height/2).toString();
+      var height = rect.height / currentScale;
+      var width = rect.width / currentScale;
+      var x = Math.round(rect.x / currentScale + width / 2).toString();
+      var y = Math.round(rect.y / currentScale + height / 2).toString();
       height = Math.round(Math.abs(height).toString());
       width = Math.round(Math.abs(width).toString());
       string += `{"coordinates":{"height":${height},"width":${width},"x":${x},"y":${y}},"label":"${rect.label}"}`;
@@ -497,7 +495,7 @@ function generate() {
         string += ',';
       }
     }
-    string += ']'
+    string += ']';
     string += '}';
     if (i !== images.length - 1) {
       string += ',';
@@ -528,7 +526,7 @@ function mouseReleased() {
     return;
   }
 
-  //Avoid misclicks/misdrags
+  // Avoid misclicks/misdrags
   if (Math.abs(mousePressedX - mouseX) < 10 || Math.abs(mousePressedY - mouseY) < 10) {
     return;
   }
@@ -580,9 +578,9 @@ document.addEventListener('keyup', (e) => {
 });
 
 function deleteSelectedRect() {
-    images[currentNum - 1].rects.splice(images[currentNum - 1].selectedRectIndex, 1);
-    images[currentNum - 1].selectedRectIndex = null;
-    document.getElementById('label-input').value = '';
+  images[currentNum - 1].rects.splice(images[currentNum - 1].selectedRectIndex, 1);
+  images[currentNum - 1].selectedRectIndex = null;
+  document.getElementById('label-input').value = '';
 }
 
 function windowResized() {
