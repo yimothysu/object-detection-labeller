@@ -211,8 +211,8 @@ function onImageLoad(num) {
   } else {
     document.getElementById('label-input').value = '';
   }
+  showMessage('Drag the cursor to form a rectangle!');
 }
-showMessage('Drag the cursor to form a rectangle!');
 // }
 
 function hideHeadingAndLabel() {
