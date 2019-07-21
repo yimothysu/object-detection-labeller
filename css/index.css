@@ -12,6 +12,10 @@
   padding-top: 0.5em;
 }
 
+.float-right {
+  float: right;
+}
+
 .hero {
   text-align: center;
 }
