@@ -99,13 +99,13 @@ button {
 }
 
 #generate-text {
-  bottom: 0.5em;
+  bottom: 22%;
   display: none;
   font-size: 14pt;
   left: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 350px;
+  width: 95%;
 }
 
 .navigation {
@@ -141,6 +141,10 @@ button {
   position: absolute;
   right: 2.5em;
   width: 5em;
+}
+
+#help-button:focus {
+  outline: none;
 }
 
 #help-button img {
@@ -223,10 +227,10 @@ button {
 
 #tutorial-info {
   left: 50%;
-  width: 95%;
   position: absolute;
   top: 18em;
   transform: translate(-50%, -50%);
+  width: 95%;
 }
 
 #tutorial-info-button {
@@ -251,5 +255,5 @@ button {
 @keyframes bob {
   0% {margin-top: 0;}
   50% {margin-top: 3em;}
-  100% {margin-top: 0em;}
+  100% {margin-top: 0;}
 }
