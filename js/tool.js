@@ -51,6 +51,8 @@ var resizingRectIndex;
 var resizingDirection;
 
 var firstDrag = true;
+var firstType = true;
+var firstEnter = true;
 var generated = false;
 
 const lineToEdge = 20;
@@ -148,7 +150,7 @@ function left() {
   } else {
     openTools(images[currentNum - 1].toolsInfo.direction);
   }
-  document.getElementById('label-input').value = '';
+  clearLabelInput();
 }
 
 function right() {
@@ -162,7 +164,7 @@ function right() {
   } else {
     openTools(images[currentNum - 1].toolsInfo.direction);
   }
-  document.getElementById('label-input').value = '';
+  clearLabelInput();
 }
 
 function dragOver() {
@@ -209,7 +211,7 @@ function onImageLoad(num) {
   if (firstDrag) {
     hideHeadingAndLabel();
   } else {
-    document.getElementById('label-input').value = '';
+    clearLabelInput();
   }
   showMessage('Drag the cursor to form a rectangle!');
 }
@@ -223,6 +225,7 @@ function openTools(option, size = '400px') {
   document.getElementById('num-1').innerHTML = currentNum;
   document.getElementById('num-2').innerHTML = images.length.toString();
   document.getElementById('tools').style.display = 'block';
+  document.getElementById('tutorial-info-button').style.display = 'none';
   /* if (option === 'bottom') {
     document.getElementById('tools').style.width = windowWidth;
     document.getElementById('tools').style.height = '200px';
@@ -322,7 +325,6 @@ function resize(direction, index) {
     return;
   }
   resizingRectIndex = index;
-  console.log(`resizing with rect index ${index}!`);
   resizing = true;
 }
 
@@ -369,7 +371,7 @@ function draw() {
   }
 
   if (images.length > 0) {
-    background(124, 166, 194);
+    background(169, 190, 194);
     const bounds = images[currentNum - 1].bounds;
     context.drawImage(document.getElementById(idFromNum(currentNum)), bounds.x, bounds.y, bounds.width, bounds.height);
     if (!resizing) {
@@ -447,15 +449,85 @@ function mousePressed() {
   }
 }
 
+function setTutorialImageAlt(alt) {
+  document.getElementById('tutorial-info-image').alt = alt;
+}
+
+function setTutorialImage(src) {
+  document.getElementById('tutorial-info-image').src = src;
+}
+
+function setTutorialText(text) {
+  document.getElementById('tutorial-info-text').innerHTML = text;
+}
+
+function setTutorial(alt, src, text) {
+  setTutorialImageAlt(alt);
+  setTutorialImage(src);
+  setTutorialText(text);
+}
+
 function onFirstDrag() {
-  document.getElementById('mouse-drag').style.display = 'none';
+  setTutorial('Up Arrow', 'image/up_arrow.svg', 'Type a label!');
+  document.getElementById('tutorial-info-image').className = 'bob';
+  document.getElementById('tutorial-info-image').style.width = '3em';
   document.getElementById('heading-and-label').style.display = 'block';
-  showMessage('If you make a mistake, press delete to remove.');
-  showDelayedMessage('When you\'re done labelling, click "generate".', 5000);
+  //showMessage('If you make a mistake, press delete to remove.');
+  //showDelayedMessage('When you\'re done labelling, click "generate".', 5000);
+}
+
+function onFirstType() {
+  document.getElementById('tutorial-info-image').style.display = 'none';
+  setTutorialText('Press enter to confirm.');
+}
+
+function onFirstEnter() {
+  document.getElementById('tutorial-info-text').style.marginTop = '3em';
+  setTutorialText('Great! You can always click on a label to edit it and press delete to remove it.');
+  document.getElementById('tutorial-info-button').style.display = 'inline';
+  document.getElementById('tutorial-info-button').onclick = () => {
+    setTutorialText('When you\'re done with all your images, click generate.');
+    document.getElementById('generate').style.display = 'inline';
+    document.getElementById('generate').onclick = () => {
+      generate();
+    };
+    document.getElementById('tutorial-info-button').onclick = () => {
+      setTutorialText('You\'re ready to begin labelling! For help, refer to the bottom-right button.');
+      document.getElementById('tutorial-info-button').innerHTML = 'Got it';
+      document.getElementById('tutorial-info-button').onclick = () => {
+        document.getElementById('tutorial-info').style.display = 'none';
+      };
+    };
+  };
 }
 
 function isLabelInputFocused() {
   return document.activeElement === document.getElementById('label-input');
+}
+
+function deselectLabelInput() {
+  document.getElementById('label-input').blur();
+}
+
+function deselectAllRects() {
+  images[currentNum - 1].selectedRectIndex = null;
+}
+
+function clearLabelInput() {
+  document.getElementById('label-input').value = '';
+}
+
+function deselectAllAndClear() {
+  deselectAllRects();
+  clearLabelInput();
+  deselectLabelInput();
+}
+
+function deleteSelectedRect() {
+  if (images[currentNum - 1].selectedRectIndex !== null && images[currentNum - 1].selectedRectIndex >= 0) {
+    images[currentNum - 1].rects.splice(images[currentNum - 1].selectedRectIndex, 1);
+    deselectAllAndClear();
+  }
 }
 
 function download(text, name, type) {
@@ -533,8 +605,8 @@ function mouseReleased() {
   }
 
   if (firstDrag) {
-    firstDrag = false;
     onFirstDrag();
+    firstDrag = false;
   }
 
   images[currentNum - 1].rects.push({
@@ -546,17 +618,22 @@ function mouseReleased() {
   });
 
   images[currentNum - 1].selectedRectIndex = images[currentNum - 1].rects.length - 1;
-  document.getElementById('label-input').value = '';
+  clearLabelInput();
   document.getElementById('label-input').focus();
-
-  document.getElementById('label').style.display = 'block';
-  document.getElementById('generate').style.display = 'inline';
-  document.getElementById('generate').onclick = () => {
-    generate();
-  };
 }
 
 document.addEventListener('keyup', (e) => {
+  if (firstDrag) {
+    return;
+  }
+
+  if (firstType) {
+    if (isLabelInputFocused() && document.getElementById('label-input').value !== '') {
+      onFirstType();
+      firstType = false;
+    }
+  }
+
   if (e.keyCode === 8 || e.keyCode === 46) {
     if (images.length > 0) {
       if ('selectedRectIndex' in images[currentNum - 1]) {
@@ -576,13 +653,16 @@ document.addEventListener('keyup', (e) => {
       right();
     }
   }
+  if (e.keyCode === 13) {
+    if (isLabelInputFocused()) {
+      deselectAllAndClear();
+      if (firstEnter) {
+        onFirstEnter();
+        firstEnter = false;
+      }
+    }
+  }
 });
-
-function deleteSelectedRect() {
-  images[currentNum - 1].rects.splice(images[currentNum - 1].selectedRectIndex, 1);
-  images[currentNum - 1].selectedRectIndex = null;
-  document.getElementById('label-input').value = '';
-}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);

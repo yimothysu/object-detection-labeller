@@ -15,15 +15,16 @@
     <button id="left" class="navigation noselect" tabindex="1"><img src="image/left_arrow.svg" alt="left arrow"></button>
     <button id="right" class="navigation noselect" tabindex="2"><img src="image/right_arrow.svg" alt="right arrow"></button>
     <div id="tools" class="absolute" tabindex="-1">
-      <div id="mouse-drag">
-        <img src="image/mouse_drag.gif" alt="Mouse Drag">
-        <h2>Drag to annotate!</h2>
+      <div id="tutorial-info">
+        <img id="tutorial-info-image" src="image/mouse_drag.gif" alt="Mouse Drag">
+        <h2 id="tutorial-info-text">Drag to annotate!</h2>
+        <button id="tutorial-info-button" class="rounded-orange">Next</button>
       </div>
       <div id="heading-and-label" class="noselect">
         <h1 id="image-heading">Image <span id="num-1"></span> of <span id="num-2"></span></h1>
         <form id="label" method="POST" onsubmit="labelRect(event)"><label for="label-input">Label: </label><input type="text" id="label-input" name="label" tabindex="0"></form>
       </div>
-      <button id="generate" class="noselect">Generate</button>
+      <button id="generate" class="noselect rounded-orange">Generate</button>
       <p id="generate-text">Great! Now, put the JSON file in a folder with all the images you used to annotate. It's ready to use in Create ML and Turi Create!</p>
       <button id="help-button" type="button"><img src="image/question_mark.svg" alt="question mark">
         <div id="help">
