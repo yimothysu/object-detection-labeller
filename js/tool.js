@@ -54,6 +54,7 @@ var firstDrag = true;
 var firstType = true;
 var firstEnter = true;
 var generated = false;
+var skipTutorial = localStorage.getItem('skipTutorial');
 
 const lineToEdge = 20;
 const messageTimeout = 4000;
@@ -84,6 +85,11 @@ function setup() {
     uploadIconLoaded = true;
   };
   uploadIcon.src = 'image/upload_icon.svg';
+
+  if (skipTutorial) {
+    document.getElementById('tutorial-info').style.display = 'none';
+    document.getElementById('generate').style.display = 'block';
+  }
 }
 
 function drawDashedBorder() {
@@ -208,12 +214,11 @@ function onImageLoad(num) {
       size: (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px'
     };
   }
-  if (firstDrag) {
+  if (firstDrag && !skipTutorial) {
     hideHeadingAndLabel();
   } else {
     clearLabelInput();
   }
-  showMessage('Drag the cursor to form a rectangle!');
 }
 // }
 
@@ -496,6 +501,7 @@ function onFirstEnter() {
       document.getElementById('tutorial-info-button').innerHTML = 'Got it';
       document.getElementById('tutorial-info-button').onclick = () => {
         document.getElementById('tutorial-info').style.display = 'none';
+        localStorage.setItem('skipTutorial', 'true');
       };
     };
   };
