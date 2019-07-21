@@ -103,8 +103,6 @@ function idFromNum(id) {
 
 function gotFile(file) {
   currentNum++;
-  console.log(`got file ${file.name}!`);
-  console.log('current num is ' + currentNum.toString());
   var img = createImg(file.data);
   let n = currentNum;
   // img.attribute('onload', 'onImageLoad(n)');
@@ -128,7 +126,6 @@ function gotFile(file) {
   document.getElementById('title-heading').style.display = 'none';
   document.getElementById('subtitle-heading').style.display = 'none';
   if (images.length > 1) {
-    console.log('images length > 1!');
     document.getElementById('left').style.display = 'block';
     document.getElementById('right').style.display = 'block';
   }
@@ -178,8 +175,6 @@ function dragLeave() {
 
 function onImageLoad(num) {
   const imageId = idFromNum(num);
-  console.log(num);
-  console.log(images[num - 1]);
   images[num - 1].scale = windowWidth / document.getElementById(imageId).width;
   /*
   if (windowHeight - document.getElementById(imageId).height * currentScale >= 200) {
@@ -320,33 +315,39 @@ function stopResizingIfNotHolding() {
   }
 }
 
-function resizeDirection(direction, i) {
+function resize(direction, index) {
   resizingDirection = direction;
   document.body.style.cursor = direction + '-resize';
   if (mouseHolding) {
     return;
   }
-  resizingRectIndex = i;
+  resizingRectIndex = index;
+  console.log(`resizing with rect index ${index}!`);
   resizing = true;
 }
 
 function manageCursor() {
   document.body.style.cursor = 'default';
+  var tempResizing = false;
   for (var i = 0; i < images[currentNum - 1].rects.length; i++) {
     var rectangle = images[currentNum - 1].rects[i];
     const re = resizeEpsilon;
     if (mouseInRegion(rectangle.x - re, rectangle.y, re * 2, rectangle.height)) {
-      resizeDirection('w', i);
+      resize('w', i);
+      tempResizing = true;
     } else if (mouseInRegion(rectangle.x + rectangle.width - re, rectangle.y, re * 2, rectangle.height)) {
-      resizeDirection('e', i);
+      resize('e', i);
+      tempResizing = true;
     } else if (mouseInRegion(rectangle.x, rectangle.y - re, rectangle.width, re * 2)) {
-      resizeDirection('n', i);
+      resize('n', i);
+      tempResizing = true;
     } else if (mouseInRegion(rectangle.x, rectangle.y + rectangle.height - re, rectangle.width, re * 2)) {
-      resizeDirection('s', i);
+      resize('s', i);
+      tempResizing = true;
     } else if (mouseInRegion(rectangle.x, rectangle.y, rectangle.width, rectangle.height)) {
       document.body.style.cursor = 'pointer';
-      stopResizingIfNotHolding();
-    } else {
+    }
+    if (!tempResizing) {
       stopResizingIfNotHolding();
     }
   }
@@ -396,7 +397,7 @@ function draw() {
           images[currentNum - 1].rects[resizingRectIndex].width = mouseX - images[currentNum - 1].rects[resizingRectIndex].x;
           break;
         default:
-          console.log('ERROR! Resizing but no resizeDirection!');
+          console.log('ERROR! Resizing but no resizingDirection!');
       }
     }
   }
@@ -515,7 +516,6 @@ function mouseReleased() {
     mouseHolding = false;
     return;
   }
-  console.log(mousePressedX);
 
   mouseHolding = false;
   if (resizing) {
