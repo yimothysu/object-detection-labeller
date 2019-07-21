@@ -181,7 +181,6 @@ function onImageLoad(num) {
   console.log(num);
   console.log(images[num - 1]);
   images[num - 1].scale = windowWidth / document.getElementById(imageId).width;
-  const currentScale = images[num - 1].scale;
   /*
   if (windowHeight - document.getElementById(imageId).height * currentScale >= 200) {
     context.drawImage(document.getElementById(imageId), 0, 0, windowWidth, document.getElementById(imageId).height * currentScale);
@@ -194,6 +193,7 @@ function onImageLoad(num) {
   */
   if (document.getElementById(imageId).height * (windowWidth - 400) / document.getElementById(imageId).width <= windowHeight) {
     images[num - 1].scale = (windowWidth - 400) / document.getElementById(imageId).width;
+    const currentScale = images[num - 1].scale;
     context.drawImage(document.getElementById(imageId), 0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale);
     setBounds(0, 0, windowWidth - 400, document.getElementById(imageId).height * currentScale, num);
     openTools('right');
@@ -202,6 +202,7 @@ function onImageLoad(num) {
     };
   } else {
     images[num - 1].scale = windowHeight / document.getElementById(imageId).height;
+    const currentScale = images[num - 1].scale;
     context.drawImage(document.getElementById(imageId), 0, 0, document.getElementById(imageId).width * currentScale, windowHeight);
     setBounds(0, 0, document.getElementById(imageId).width * currentScale, windowHeight, num);
     openTools('right', (windowWidth - document.getElementById(imageId).width * currentScale).toString() + 'px');
