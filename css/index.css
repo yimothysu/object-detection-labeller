@@ -6,10 +6,10 @@
 
 .navbar ul li {
   list-style-type: none;
-  padding-top: 0.5em;
-  padding-right: 1.5em;
   margin-bottom: 1em;
   overflow: hidden;
+  padding-right: 1.5em;
+  padding-top: 0.5em;
 }
 
 .hero {
@@ -17,8 +17,8 @@
 }
 
 .hero h1 {
-  margin-top: 2em;
   font-size: 3em;
+  margin-top: 2em;
 }
 
 .hero h1, .hero h2 {
@@ -27,26 +27,27 @@
 
 .hero h2 {
   font-weight: lighter;
-  padding-bottom: 1em;
-  margin-top: 1em;
   margin-bottom: 1em;
+  margin-top: 1em;
+  padding-bottom: 1em;
 }
 
 .box img {
-
+  height: 450px;
+  width: 600px;
 }
 
 .code-box {
   background-color: #f7f7f7;
   display: inline-block;
-  vertical-align: top;
   height: 450px;
+  vertical-align: top;
 }
 
 .code {
   font-family: monospace;
-  padding-top: 0.5em;
   padding-left: 0.5em;
+  padding-top: 0.5em;
 }
 
 .hero .button {
@@ -55,15 +56,15 @@
 }
 
 .button {
-  border-radius: 1em;
-  border: 0 solid;
-  padding: 0.5em;
-  margin: 0 auto;
-  width: 10em;
-  color: #f7f7f7;
   background-color: #bf6bcf;
+  border: 0 solid;
+  border-radius: 1em;
+  color: #f7f7f7;
   font-size: 1em;
+  margin: 0 auto;
+  padding: 0.5em;
   text-decoration: none;
+  width: 10em;
 }
 
 .button:hover {
@@ -99,11 +100,11 @@
 }
 
 .group-right {
-  text-align: right;
   padding-right: 6em;
+  text-align: right;
 }
 
 .section-2 img {
-  width: 50%;
   padding-top: 1em;
+  width: 50%;
 }
