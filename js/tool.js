@@ -90,6 +90,37 @@ function setup() {
     document.getElementById('tutorial-info').style.display = 'none';
     document.getElementById('generate').style.display = 'block';
   }
+
+  setupOnClick();
+}
+
+function setupOnClick() {
+  document.getElementById('generate').onclick = () => {
+    generate();
+  };
+
+  document.getElementById('left').onclick = () => {
+    left();
+  };
+  document.getElementById('right').onclick = () => {
+    right();
+  };
+
+  if (skipTutorial) {
+    return;
+  }
+  document.getElementById('tutorial-info-button').onclick = () => {
+    setTutorialText('When you\'re done with all your images, click generate.');
+    document.getElementById('generate').style.display = 'inline';
+    document.getElementById('tutorial-info-button').onclick = () => {
+      setTutorialText('You\'re ready to begin labelling! For help, refer to the bottom-right button.');
+      document.getElementById('tutorial-info-button').innerHTML = 'Got it';
+      document.getElementById('tutorial-info-button').onclick = () => {
+        document.getElementById('tutorial-info').style.display = 'none';
+        localStorage.setItem('skipTutorial', 'true');
+      };
+    };
+  };
 }
 
 function drawDashedBorder() {
@@ -137,12 +168,6 @@ function gotFile(file) {
     document.getElementById('left').style.display = 'block';
     document.getElementById('right').style.display = 'block';
   }
-  document.getElementById('left').onclick = () => {
-    left();
-  };
-  document.getElementById('right').onclick = () => {
-    right();
-  };
 }
 
 function left() {
@@ -490,21 +515,6 @@ function onFirstEnter() {
   document.getElementById('tutorial-info-text').style.marginTop = '3em';
   setTutorialText('Great! You can always click on a label to edit it and press delete to remove it.');
   document.getElementById('tutorial-info-button').style.display = 'inline';
-  document.getElementById('tutorial-info-button').onclick = () => {
-    setTutorialText('When you\'re done with all your images, click generate.');
-    document.getElementById('generate').style.display = 'inline';
-    document.getElementById('generate').onclick = () => {
-      generate();
-    };
-    document.getElementById('tutorial-info-button').onclick = () => {
-      setTutorialText('You\'re ready to begin labelling! For help, refer to the bottom-right button.');
-      document.getElementById('tutorial-info-button').innerHTML = 'Got it';
-      document.getElementById('tutorial-info-button').onclick = () => {
-        document.getElementById('tutorial-info').style.display = 'none';
-        localStorage.setItem('skipTutorial', 'true');
-      };
-    };
-  };
 }
 
 function isLabelInputFocused() {
