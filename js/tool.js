@@ -92,6 +92,10 @@ function setup() {
   }
 
   setupOnClick();
+
+  window.onbeforeunload = () => {
+    return 'Leave site? Changes you made may not be saved.';
+  };
 }
 
 function setupOnClick() {
