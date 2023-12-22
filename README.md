@@ -1,8 +1,8 @@
 # Object Detection Labeller
 
-<a href="https://jimsu2012.github.io/object-detection-labeller/"><img src="https://github.com/jimsu2012/object-detection-labeller/blob/master/image/label_page.png" alt="Object Detection Labeller Homepage"></a>
+<a href="https://yimothysu.github.io/object-detection-labeller/"><img src="https://github.com/yimothysu/object-detection-labeller/blob/master/image/label_page.png" alt="Object Detection Labeller Homepage"></a>
 
-## Try it out: https://jimsu2012.github.io/object-detection-labeller
+## Try it out: https://yimothysu.github.io/object-detection-labeller
 
 ## More Information
 
